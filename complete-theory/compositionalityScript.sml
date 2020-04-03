@@ -71,7 +71,7 @@ Theorem IMPL_AX_THM:
   ∀c s. C_M c ∈ S_M s ⇔ Impl c s
 Proof
   EVAL_TAC >>
-  metis_tac[]
+  rw[]
 QED
 
 Theorem ELEM_IN_AND_THM:
@@ -86,6 +86,20 @@ Theorem AND_THM:
 Proof
   rw[] >>
   metis_tac[IMPL_AX_THM, ELEM_IN_AND_THM]
+QED
+
+Theorem AND_ELIM_1_THM:
+  ∀c s1 s2. Impl c (And s1 s2) ⇒ Impl c s2
+Proof
+  EVAL_TAC >>
+  rw[]
+QED
+
+Theorem AND_ELIM_2_THM:
+  ∀c s1 s2. Impl c (And s1 s2) ⇒ Impl c s1
+Proof
+  EVAL_TAC >>
+  rw[]
 QED
 
 (*
