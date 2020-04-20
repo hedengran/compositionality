@@ -2,5 +2,3 @@
 *Theory.sig
 *.HOLMK*
 *.hollogs*
-HOL*
-!HOL/bin/Holmake
