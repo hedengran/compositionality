@@ -17,6 +17,11 @@ For this theory a number of unicode symbols have been defined for readability.
 
 This formalization uses a Contract Theory syntax, and semantic interpretation, based on [[1]](#1).
 
+## TODO
+* Move parse rules to separate file
+* Expand README
+* Explore faster searching?
+
 ## References
 <a id="1">[1]</a> 
 Nyberg, M., Westman, J., & Gurov, D. (2019). 
