@@ -1,4 +1,3 @@
-
 open HolKernel boolLib bossLib Parse bagTheory
 val _ = new_theory "gentzen_compositionality";
 
@@ -47,49 +46,21 @@ End
 
 Inductive G:
     (∀(t:α Term) Γ. (t <: Γ) ⇒ G Γ t) (* ax *)
-  ∧ (∀t1 (t2:α Term) Γ . G Γ t1 ⇒ G (BAG_INSERT t2 Γ) t1) (* *)
+  ∧ (∀t1 (t2:α Term) Γ . G Γ t1 ⇒ G (BAG_INSERT T2 Γ) t1) (* *)
   ∧ (∀c s1 s2 Γ. G Γ (c ◁ s1) ∧ G Γ (c ◁ s2) ⇒ G Γ (c ◁ (s1 ⊓ s2))) (* and-introduction *)
-  ∧ (∀c s1 s2 Γ. G Γ (c ◁ (s1 ⊓ s2)) ⇒ G Γ (c ◁ s1)) (* and-elimination-1 *)
-  ∧ (∀c s1 s2 Γ. G Γ (c ◁ (s1 ⊓ s2)) ⇒ G Γ (c ◁ s2)) (* and-elimination-2 *)
+  ∧ (∀c s1 s2 Γ. G Γ (c ◁ (And s1 s2)) ⇒ G Γ (c ◁ s1)) (* and-elimination-1 *)
+  ∧ (∀c s1 s2 Γ. G Γ (c ◁ (And s1 s2)) ⇒ G Γ (c ◁ s2)) (* and-elimination-2 *)
   ∧ (∀q0 c s1 s2 Γ. G (BAG_INSERT (q0 ◁ s1) Γ) ((q0 ₓ c) ◁ s2) ⇒ G Γ (c ◁ (s1,s2))) (* contract-introduction *)
   ∧ (∀c1 c2 s1 s2 Γ. G Γ (c1 ◁ s1) ∧ G Γ (c2 ◁ (s1, s2)) ⇒ G Γ ((c1 ₓ c2) ◁ s2)) (* contract-elimination *)
   ∧ (∀c1 c2 s Γ. G Γ (c1 ◁ s) ∧ G Γ Assertional(s) ⇒ G Γ ((c1 ₓ c2) ◁ s)) (* assertional *)
   ∧ (∀c s1 s2 Γ. G Γ (c ◁ s1) ∧ G Γ (s1 ⊑ s2) ⇒ G Γ (c ◁ s2)) (* refinement *)
-  ∧ (∀c1 c2 c3 s Γ. G Γ (c1 ₓ c2 ₓ c3 ◁ s) ⇒ G Γ (c1 ₓ (c2 ₓ c3) ◁ s)) (* comp-assoc *)
-  ∧ (∀c1 c2 s Γ. G Γ (c1 ₓ c2 ◁ s) ⇒ G Γ (c2 ₓ c1 ◁ s) (* comp-comm *)
+  ∧ (∀c1 c2 c3 s Γ. G Γ (((c1 ₓ c2) ₓ c3) ◁ s) ⇒ G Γ ((c1 ₓ (c2 ₓ c3)) ◁ s)) (* comp-assoc-1 *)
+  ∧ (∀c1 c2 c3 s Γ. G Γ ((c1 ₓ (c2 ₓ c3)) ◁ s) ⇒ G Γ (((c1 ₓ c2) ₓ c3) ◁ s)) (* comp-assoc-2 *)
 End
 
-val [G_ax, G_down, G_and_i, G_and_el1, G_and_el2, G_contract_i, G_contract_el, G_assertional, G_refinement, G_comp_assoc1, G_comp_assoc2] = CONJUNCTS G_rules;
-
-Theorem Conjunction_refinement:
+Theorem CONJ_REF_THM:
   ∀c s1 s2 s3 Γ. G Γ (c ◁ s1 ⊓ s2) ∧ G Γ (s2 ⊑ s3) ⇒ G Γ (c ◁ (s1 ⊓ s3))
 Proof
-  metis_tac[G_rules]
-QED
-
-Theorem PAPER_EXAMPLE:
-  let
-    Γ = {|Assertional(a); a ⊑ a1; a ⊓ g1 ⊑ a2; g2 ⊑ g|}
-  in
-    G Γ (c1 ◁ (a1, g1)) ∧ G Γ (c2 ◁ (a2, g2)) ⇒ G Γ (c1 ₓ c2 ◁ (a, g))
-Proof
-  rw[] >>
-  metis_tac[G_rules]
-QED
-
-Theorem FUEL_LEVEL_DISPLAY_CONTROLLER:
-  let
-    Γ = {|g_I ⊑ a_A; g_ADC ⊑ a_I; g_A ⊑ a_DAC; g_T ⊑ a_ADC; g_DAC ⊑ a_D;|}
-  in
-      G Γ (c_I ◁ (a_I, g_I))       (* Interface *)
-    ∧ G Γ (c_A ◁ (a_A, g_A))       (* Applet *)
-    ∧ G Γ (c_ADC ◁ (a_ADC, g_ADC)) (* ADC *)
-    ∧ G Γ (c_DAC ◁ (a_DAC, g_DAC)) (* DAC *)
-    ∧ G Γ (c_T ◁ (a_T, g_T))       (* Tank *)
-    ∧ G Γ (c_D ◁ (a_D, g_D))       (* Display *)
-  ⇒ G Γ ((c_T ₓ c_ADC ₓ c_I ₓ c_A ₓ c_DAC ₓ c_D) ◁ (a_T, g_D))
-Proof
-  rw[] >>
   metis_tac[G_rules]
 QED
 
