@@ -2,3 +2,9 @@
 *Theory.sig
 *.HOLMK*
 *.hollogs*
+*.dat
+*.ui
+*.uo
+*~
+*#
+.#*
