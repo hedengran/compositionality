@@ -1,4 +1,3 @@
-
 open HolKernel boolLib bossLib Parse bagTheory listTheory
 val _ = new_theory "compositionality";
 
@@ -160,17 +159,6 @@ Proof
   metis_tac[G_LOWER_IMP, CONTRACT_ELIM_THM]
 QED
 
-(*
-Theorem G_CONTRACT_INTRO_THM:
-  ∀q0 c s1 s2 Γ. G ((Impl q0 s1) INSERT Γ) (Impl (Composition q0 c) s2) ⇒ G Γ (Impl c (s1, s2))
-Proof
-  rw[]
-  ‘G ((Impl q0 s1) INSERT Γ) (Impl q0 s1)’ by metis_tac[G_AX, pred_setTheory.IN_INSERT]
-  ASSUME_TAC SPEC_CONTRACT_INTRO_THM
-  metis_tac[G_LOWER_IMP]
-QED
-*)
-
 val comp_rules = [ELEM_IN_AND_THM,
                   AND_THM,
                   AND_ELIM_1_THM,
@@ -189,15 +177,6 @@ val comp_rules = [ELEM_IN_AND_THM,
                   BAG_IN_BAG_INSERT,
                   COMP_ASSOC_THM,
                   COMP_COMM_THM];
-(*
-Context menu
-
-Pallet
-*)
-
-Definition COMPOSITIONALITY_TAC:
-  COMPOSITIONALITY_TAC = metis_tac comp_rules
-End
 
 Theorem PAPER_EXAMPLE:
   let
