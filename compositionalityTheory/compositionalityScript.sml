@@ -61,6 +61,15 @@ Definition Refines:
     Refines s1 s2 ⇔ S_M s1 ⊆ S_M s2
 End
 
+Definition Is_Downward_Closed:
+    Is_Downward_Closed s ⇔ ∀e. e ∈ S_M s ⇒ (∀e'. e' ⊆ e ⇒ e' ∈ S_M s)
+End
+
+Definition Assertional:
+    Assertional s ⇔ Is_Downward_Closed s
+End
+
+
 Theorem IMPLEMENTS_AX_THM:
   ∀c s. c ◁ s ⇔ C_M c ∈ S_M s 
 Proof
@@ -80,6 +89,15 @@ Theorem COMP_IMPL_EX_THM:
 Proof
   ASSUME_TAC COMP_EX_THM >>
   metis_tac[]
+QED
+
+Theorem ASSERTIONAL_THM:
+ ∀c1 c2 s. c1 ◁ s ∧ Assertional(s) ⇒ c1 ₓ c2 ◁ s
+Proof
+  EVAL_TAC >>
+  rw[] >>
+  ‘∀e'. e' ⊆ C_M c1 ⇒ e' ∈ S_M s’ by metis_tac[] >>
+  metis_tac[pred_setTheory.INTER_SUBSET]
 QED
 
 Theorem COMP_ASSOC_THM:
@@ -147,9 +165,6 @@ Proof
   rw[] >>
   metis_tac[COMP_IMPL_EX_THM]
 QED
-
-val Assertional_AX =
- new_axiom("Assertional_AX", “∀c1 c2 s. c1 ◁ s ∧ Assertional(s) ⇒ c1 ₓ c2 ◁ s”);
 
 (*
 https://github.com/HOL-Theorem-Prover/HOL/blob/develop/examples/logic/propositional_logic/IntuitionisticProofScript.sml
